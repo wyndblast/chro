@@ -1,9 +1,7 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.6;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -25,13 +23,11 @@ contract CHRO is ERC20, ERC20Permit, ERC20Votes, ERC20Pausable, Ownable {
    * @param _account Token hoder
    * @param _amount Amount of token
    */
-  function burn(
-    address _account,
-    uint256 _amount
-  ) public onlyOwner {
-    _burn(_account, _amount);
-  }
   
+  function burn(uint256 amount) public onlyOwner returns (bool) {
+    _burn(_msgSender(), amount);
+    return true;
+  }
   /**
    * @notice Mint token
    * @param _to Receiver address
@@ -41,6 +37,7 @@ contract CHRO is ERC20, ERC20Permit, ERC20Votes, ERC20Pausable, Ownable {
     address _to,
     uint256 _amount
   ) public onlyOwner {
+    require(_to != address(0), "Not Mint for the zero address");
     require(totalSupply() + _amount <= MAX_SUPPLY, "Exceeded maximum supply");
     _mint(_to, _amount);
   }
