@@ -20,7 +20,7 @@ contract CHRO is ERC20, ERC20Permit, ERC20Votes, ERC20Pausable, Ownable {
 
   /**
    * @notice Destroys amount tokens from account
-   * @param _amount Amount of token
+   * @param amount Amount of token
    */
   
   function burn(uint256 amount) public onlyOwner returns (bool) {
