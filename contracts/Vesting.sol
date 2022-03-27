@@ -190,9 +190,11 @@ contract Vesting is Ownable {
    */
   function _setReleaseSchedule() internal virtual {
     uint256 durationPerDivider = duration().div(_divider);
+    uint256 lockedTime = start();
 
     for (uint256 i = 0; i < _divider; i++) {
-      releaseSchedule[i] = start().add(durationPerDivider);
+      lockedTime += durationPerDivider;
+      releaseSchedule[i] = lockedTime;
     }
   }
 

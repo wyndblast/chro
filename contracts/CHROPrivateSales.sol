@@ -36,6 +36,9 @@ contract CHROPrivateSales is Vesting {
   address public multisigAddress;
   address public usdTokenAddress;
 
+  // maximum allocation of CHRO
+  uint256 public constant MAX_ALLOCATION = 15000000000000000000000000;
+
   /**
    * @notice Sets all required contract addresses
    * @param _chroAddress CHRO contract address
@@ -230,7 +233,6 @@ contract CHROPrivateSales is Vesting {
    * @return uint256 Balance of token
    */
   function _getTokenBalance() internal view virtual returns(uint256) {
-    uint256 balance = chroContract.balanceOf(address(this));
-    return balance.sub(tokensSold);
+    return MAX_ALLOCATION.sub(tokensSold);
   }
 }

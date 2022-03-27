@@ -99,6 +99,12 @@ describe("Private Sales Development Test", function () {
 
       const releaseSchedule = await privateSalesContract.releaseSchedule(0)
       console.log(releaseSchedule)
+      const releaseSchedule1 = await privateSalesContract.releaseSchedule(1)
+      console.log(releaseSchedule1)
+      const releaseSchedule2 = await privateSalesContract.releaseSchedule(2)
+      console.log(releaseSchedule2)
+      const releaseSchedule3 = await privateSalesContract.releaseSchedule(3)
+      console.log(releaseSchedule3)
     });
   });
 
@@ -151,7 +157,7 @@ describe("Private Sales Development Test", function () {
       await privateSalesContract.connect(address2).release()
 
       // try to re-release in one same of period, it's should be thrown an error
-      await privateSalesContract.connect(address2).release()
+      // await privateSalesContract.connect(address2).release()
 
       const CHROBalance = await chroContract.balanceOf(address2.address)
       expect(CHROBalance).to.equal(ethers.utils.parseEther("25000"))
