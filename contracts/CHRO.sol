@@ -20,7 +20,6 @@ contract CHRO is ERC20, ERC20Permit, ERC20Votes, ERC20Pausable, Ownable {
 
   /**
    * @notice Destroys amount tokens from account
-   * @param _account Token hoder
    * @param _amount Amount of token
    */
   
