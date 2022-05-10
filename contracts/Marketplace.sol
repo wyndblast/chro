@@ -230,7 +230,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ERC721Holder {
 
     require(item.seller == _msgSender(), "Not token owner");
     require(item.bids.length == 0, "Bid exists");
-    require(item.saleStatus == SaleStatus.Open, "Item is unavailable");
+    require(item.saleStatus == SaleStatus.Open || item.saleStatus == SaleStatus.Expired, "Item is unavailable");
 
     /// release nft and transfer it to the seller
     IERC721 nftRegistry = IERC721(item.nftAddress);
@@ -818,6 +818,8 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ERC721Holder {
 
             emit ItemSold(auctionExpiry.itemId, SaleStatus.Sold, _msgSender());
           } else {
+            IERC721(item.nftAddress).transferFrom(address(this), item.seller, item.tokenId);
+            delete _holdNFTs[item.nftAddress][item.tokenId];
             item.saleStatus = SaleStatus.Expired;
             emit ItemExpired(auctionExpiry.itemId, SaleStatus.Expired, _msgSender());
           }
