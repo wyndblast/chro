@@ -249,6 +249,8 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ERC721Holder {
   function buy(bytes32 _itemId) public whenNotPaused {
     Item storage item = _items[_itemId];
 
+    require(item.seller != _msgSender(), "You are owner of this item");
+
     _executePayment(_itemId, _msgSender());
 
     item.buyer = _msgSender();
@@ -270,7 +272,8 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ERC721Holder {
   ) public whenNotPaused {
     Item storage item = _items[_itemId];
 
-    require(_price >= (item.topBidPrice.add(item.topBidPrice.div(1000).mul(bidThreshold))), "Minimum bid price is required");
+    require(item.seller != _msgSender(), "You are owner of this item");
+    require(_price >= (item.topBidPrice.add(item.topBidPrice.mul(bidThreshold).div(1000))), "Minimum bid price is required");
     require(_tokenContract.balanceOf(_msgSender()) >= _price, "Not enough tokens");
     require(_tokenContract.allowance(_msgSender(), address(this)) >= _price, "Not enough allowance");
 
@@ -674,6 +677,8 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ERC721Holder {
     address _wallet,
     uint256 _percentage
   ) public onlyOwner {
+    require(_percentage <= 30000, "Percentage must be less than 30%");
+    
     _feeCollectors.push(FeeCollector({
       wallet: _wallet,
       percentage: _percentage
@@ -1008,7 +1013,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ERC721Holder {
       
       for (uint256 i = 0; i < _feeCollectors.length; i++) {
         if (_feeCollectors[i].wallet != address(0) && _feeCollectors[i].percentage > 0) {
-          uint256 fees = price.div(1000).mul(_feeCollectors[i].percentage);
+          uint256 fees = price.mul(_feeCollectors[i].percentage).div(1000);
           _releaseHoldAmount(_itemId, _sender, _feeCollectors[i].wallet, fees);
           toTransfer -= fees;
         }
@@ -1031,7 +1036,7 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ERC721Holder {
 
       for (uint256 i = 0; i < _feeCollectors.length; i++) {
         if (_feeCollectors[i].wallet != address(0) && _feeCollectors[i].percentage > 0) {
-          uint256 fees = price.div(1000).mul(_feeCollectors[i].percentage);
+          uint256 fees = price.mul(_feeCollectors[i].percentage).div(1000);
           _tokenContract.transfer(_feeCollectors[i].wallet, fees);
           toTransfer -= fees;
         }
