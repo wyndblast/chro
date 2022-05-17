@@ -384,6 +384,8 @@ contract Marketplace is OwnableUpgradeable, PausableUpgradeable, ERC721Holder {
     toCollection.transferFrom(_swap.toUser, _swap.fromUser, _swap.toTokenId);
 
     _swap.saleStatus = SaleStatus.Sold;
+
+    emit SwapApproved(_swapId, _swap.toUser);
   }
 
   /**
