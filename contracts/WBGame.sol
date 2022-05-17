@@ -89,11 +89,7 @@ contract WBGame is
     mapping(address => uint256) private _addressCHROReward;
     mapping(address => uint256) private _addressClaimedTime;
 
-    address private _nftAddress;
-    address private _caller;
     uint256 private _breedingCost;
-    uint256 private _trainingCost;
-    uint256 private _forgingCost;
     uint256 private _totalReward;
 
     /// first generation or genesis contract
@@ -105,8 +101,6 @@ contract WBGame is
 
     mapping(uint256 => HolderPlace) private _heldTokens;
     mapping(uint256 => address) private _tokenOwners;
-
-    address private _treasury;
 
     event TreasurySet(address newAddress);
 
@@ -122,8 +116,6 @@ contract WBGame is
         _tokenContract = IERC20(_tokenAddress);
 
         _breedingCost = 200000000000000000000;
-        _trainingCost = 200000000000000000000;
-        _forgingCost = 200000000000000000000;
 
         breedId = Counters.Counter({_value: 0});
     }
@@ -377,6 +369,11 @@ contract WBGame is
         );
 
         uint256 amount = _addressCHROReward[_msgSender()];
+
+        require(
+            amount <= _totalReward,
+            "Insufficent reward balance"
+        );
 
         require(
             amount <= _tokenContract.balanceOf(address(this)),
