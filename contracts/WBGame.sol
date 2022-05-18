@@ -384,6 +384,7 @@ contract WBGame is
         _totalReward -= amount;
 
         _addressClaimedTime[_msgSender()] = block.timestamp;
+        _addressCHROReward[_msgSender()] = 0;
 
         emit RewardClaimed(_msgSender(), amount, block.timestamp);
     }
